@@ -15,10 +15,10 @@ from collections import defaultdict
 class WiggleCancel(GiskardBehavior):
     def __init__(self, name):
         super(WiggleCancel, self).__init__(name)
-        self.fft_duration = self.get_god_map().safe_get_data(identifier.fft_duration)
-        self.wiggle_detection_threshold = self.get_god_map().safe_get_data(identifier.wiggle_detection_threshold)
-        self.min_wiggle_frequency = self.get_god_map().safe_get_data(identifier.min_wiggle_frequency)
-        self.sample_period = self.get_god_map().safe_get_data(identifier.sample_period)
+        self.fft_duration = self.get_god_map().get_data(identifier.fft_duration)
+        self.wiggle_detection_threshold = self.get_god_map().get_data(identifier.wiggle_detection_threshold)
+        self.min_wiggle_frequency = self.get_god_map().get_data(identifier.min_wiggle_frequency)
+        self.sample_period = self.get_god_map().get_data(identifier.sample_period)
         self.num_points_in_fft = int(self.fft_duration / self.sample_period)
 
 
@@ -28,7 +28,7 @@ class WiggleCancel(GiskardBehavior):
         super(WiggleCancel, self).initialise()
 
     def update(self):
-        latest_points = self.get_god_map().safe_get_data(identifier.joint_states)
+        latest_points = self.get_god_map().get_data(identifier.joint_states)
 
         for key in latest_points:
             self.joint_dict[key].append(latest_points[key].velocity)
@@ -70,13 +70,13 @@ class MaxTrajLength(GiskardBehavior):
 
 class CollisionCancel(GiskardBehavior):
     def __init__(self, name):
-        self.collision_time_threshold = self.get_god_map().safe_get_data(identifier.collision_time_threshold)
+        self.collision_time_threshold = self.get_god_map().get_data(identifier.collision_time_threshold)
         super(CollisionCancel, self).__init__(name)
 
     def update(self):
-        time = self.get_god_map().safe_get_data(identifier.time)
+        time = self.get_god_map().get_data(identifier.time)
         if time >= self.collision_time_threshold:
-            cp = self.get_god_map().safe_get_data(identifier.closest_point)
+            cp = self.get_god_map().get_data(identifier.closest_point)
             if cp is not None and closest_point_constraint_violated(cp, tolerance=1):
                 self.raise_to_blackboard(PathCollisionException(
                     u'robot is in collision after {} seconds'.format(self.collision_time_threshold)))

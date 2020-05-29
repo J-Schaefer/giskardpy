@@ -129,8 +129,8 @@ class SendResult(ActionServerBehavior):
         result = MoveResult()
         result.error_code = self.exception_to_error_code(e)
 
-        trajectory = self.get_god_map().safe_get_data(identifier.trajectory)
-        sample_period = self.get_god_map().safe_get_data(identifier.sample_period)
+        trajectory = self.get_god_map().get_data(identifier.trajectory)
+        sample_period = self.get_god_map().get_data(identifier.sample_period)
         controlled_joints = self.get_robot().controlled_joints
         result.trajectory = traj_to_msg(sample_period, trajectory, controlled_joints, True)
 

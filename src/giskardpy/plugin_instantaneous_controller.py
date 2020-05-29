@@ -24,8 +24,8 @@ from giskardpy import logging
 class ControllerPlugin(GiskardBehavior):
     def __init__(self, name):
         super(ControllerPlugin, self).__init__(name)
-        self.path_to_functions = self.get_god_map().safe_get_data(identifier.data_folder)
-        self.nWSR = self.get_god_map().safe_get_data(identifier.nWSR)
+        self.path_to_functions = self.get_god_map().get_data(identifier.data_folder)
+        self.nWSR = self.get_god_map().get_data(identifier.nWSR)
         self.soft_constraints = None
         self.qp_data = {}
         self.get_god_map().safe_set_data(identifier.qp_data, self.qp_data) # safe dict on godmap and work on ref
@@ -38,7 +38,7 @@ class ControllerPlugin(GiskardBehavior):
         return super(ControllerPlugin, self).setup(5.0)
 
     def init_controller(self):
-        new_soft_constraints = self.get_god_map().safe_get_data(identifier.soft_constraint_identifier)
+        new_soft_constraints = self.get_god_map().get_data(identifier.soft_constraint_identifier)
         if self.soft_constraints is None or set(self.soft_constraints.keys()) != set(new_soft_constraints.keys()):
             self.soft_constraints = copy(new_soft_constraints)
             self.controller = InstantaneousController(self.get_robot(),
@@ -58,7 +58,7 @@ class ControllerPlugin(GiskardBehavior):
             self.qp_data[identifier.xdot_keys[-1]] = self.controller.get_qpdata_key_map()
 
     def update(self):
-        last_cmd = self.get_god_map().safe_get_data(identifier.cmd)
+        last_cmd = self.get_god_map().get_data(identifier.cmd)
         self.get_god_map().safe_set_data(identifier.last_cmd, last_cmd)
 
         expr = self.controller.get_expr()
